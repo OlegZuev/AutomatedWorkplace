@@ -21,7 +21,7 @@ namespace AutomatedWorkplace.ViewModels {
 
             foreach (BookAndAuthor booksAndAuthors in Entities) {
                 booksAndAuthors.AuthorBookNumberText = booksAndAuthors.AuthorBookNumber.ToString();
-                booksAndAuthors.InitializeValidator(Books, Authors);
+                booksAndAuthors.InitializeValidator(Books, Authors, Entities);
             }
 
             DataGridCellEditEndingCommand =
@@ -33,7 +33,7 @@ namespace AutomatedWorkplace.ViewModels {
         protected override void BookOrdersContext_NewEntityAdded() {
             PageLoaded(null);
             using (var context = new BookOrdersContext()) {
-                UpdateEntity(Entities, context.BooksAndAuthors.ToList(), Books, Authors);
+                UpdateEntity(Entities, context.BooksAndAuthors.ToList(), Books, Authors, Entities);
                 foreach (BookAndAuthor bookAndAuthor in Entities) {
                     bookAndAuthor.AuthorBookNumberText = bookAndAuthor.AuthorBookNumber.ToString();
                 }
@@ -42,7 +42,7 @@ namespace AutomatedWorkplace.ViewModels {
 
         protected override void DataGridAddingNewItem(AddingNewItemEventArgs e) {
             e.NewItem = new BookAndAuthor();
-            ((BookAndAuthor) e.NewItem).InitializeValidator(Books, Authors);
+            ((BookAndAuthor) e.NewItem).InitializeValidator(Books, Authors, Entities);
         }
 
         private void DataGridCellEditEnding(DataGridCellEditEndingEventArgs e) {

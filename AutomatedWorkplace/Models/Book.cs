@@ -94,7 +94,7 @@ namespace AutomatedWorkplace.Models {
                                  publishers.Any(publisher => publisher.Id == ISBNUtils.GetPublisherId(isbn)))
                    .WithMessage("Publisher that owns such ISBN does not exist")
                    .Must(isbn => books == null ||
-                                 !books.Any(book => !book.EqualsPrimaryKey(this) && book.ISBN == isbn))
+                                 !books.Any(book => !ReferenceEquals(book, this) && book.ISBN == isbn))
                    .WithMessage("ISBN should be unique")
                    .AllWhen(book => ISBNUtils.IsValid(book.ISBN));
             builder.RuleFor(book => book.Name)

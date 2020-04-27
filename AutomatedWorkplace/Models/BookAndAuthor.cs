@@ -65,10 +65,11 @@ namespace AutomatedWorkplace.Models {
         public override void InitializeValidator(params object[] entities) {
             var books = entities.Length > 0 ? entities[0] as IList<Book> : null;
             var authors = entities.Length > 1 ? entities[1] as IList<Author> : null;
-            Validator = GetValidator(books, authors);
+            var booksAndAuthors = entities.Length > 2 ? entities[2] as IList<BookAndAuthor> : null;
+            Validator = GetValidator(books, authors, booksAndAuthors);
         }
 
-        private IObjectValidator GetValidator(IList<Book> books = null, IList<Author> authors = null) {
+        private IObjectValidator GetValidator(IList<Book> books = null, IList<Author> authors = null, IList<BookAndAuthor> booksAndAuthors = null) {
             var builder = new ValidationBuilder<BookAndAuthor>();
 
             builder.RuleFor(booksAndAuthor => booksAndAuthor.ISBN)
@@ -81,6 +82,12 @@ namespace AutomatedWorkplace.Models {
                    .Must(authorBookNumberText =>
                              int.TryParse(authorBookNumberText, out int result) && result >= 0)
                    .WithMessage("Author book number should be positive number");
+            builder.RuleFor(booksAndAuthor => booksAndAuthor.AuthorId)
+                   .Must(authorId => booksAndAuthors == null || booksAndAuthors.Count(booksAndAuthor => booksAndAuthor.AuthorId == authorId && booksAndAuthor.ISBN == ISBN) < 2)
+                   .WithMessage("Pair of book and author should be unique");
+            builder.RuleFor(booksAndAuthor => booksAndAuthor.ISBN)
+                   .Must(isbn => booksAndAuthors == null || booksAndAuthors.Count(booksAndAuthor => booksAndAuthor.AuthorId == AuthorId && booksAndAuthor.ISBN == isbn) < 2)
+                   .WithMessage("Pair of book and author should be unique");
 
             return builder.Build(this);
         }

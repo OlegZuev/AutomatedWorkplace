@@ -97,7 +97,8 @@
                 </b:EventTrigger>
                 <b:EventTrigger EventName="RowEditEnding">
                     <b:InvokeCommandAction Command="{Binding DataGridRowEditEndingCommand}"
-                                           PassEventArgsToCommand="True" />
+                                           EventArgsConverter="{StaticResource EventArgsConverter}"
+                                           EventArgsConverterParameter="{Binding ElementName=DataGrid}" />
                 </b:EventTrigger>
                 <b:EventTrigger EventName="PreviewKeyDown">
                     <b:InvokeCommandAction Command="{Binding PreviewKeyDownCommand}"

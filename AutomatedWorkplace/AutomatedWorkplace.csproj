@@ -126,6 +126,7 @@
     <Compile Include="Converters\NullImageConverter.cs" />
     <Compile Include="Converters\PublisherEditingDisplayConverter.cs" />
     <Compile Include="Converters\ValidationToVisibilityConverter.cs" />
+    <Compile Include="Converters\ValidatorMessagesConverter.cs" />
     <Compile Include="Models\Author.cs" />
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\BookOrdersContext.cs" />

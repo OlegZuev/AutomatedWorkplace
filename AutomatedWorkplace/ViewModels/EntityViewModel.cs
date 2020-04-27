@@ -22,7 +22,7 @@ namespace AutomatedWorkplace.ViewModels {
         protected EntityViewModel() {
             DataGridAddingNewItemCommand = new DelegateCommand<AddingNewItemEventArgs>(DataGridAddingNewItem);
             PreviewKeyDownCommand = new DelegateCommand<object>(PreviewKeyDown);
-            DataGridRowEditEndingCommand = new DelegateCommand<DataGridRowEditEndingEventArgs>(DataGridRowEditEnding);
+            DataGridRowEditEndingCommand = new DelegateCommand<object>(DataGridRowEditEnding);
             PageLoadedCommand = new DelegateCommand<object>(PageLoaded);
 
             BookOrdersContext.NewEntityAdded += BookOrdersContext_NewEntityAdded;
@@ -86,22 +86,38 @@ namespace AutomatedWorkplace.ViewModels {
             }
         }
 
-        protected static void DataGridRowEditEnding(DataGridRowEditEndingEventArgs e) {
+        protected static void DataGridRowEditEnding(object eventArgs) {
+            var tempEventArgs = (object[])eventArgs;
+            if (!(tempEventArgs[0] is DataGridRowEditEndingEventArgs e && tempEventArgs[1] is DataGrid sender)) {
+                throw new ArgumentException("Bad arguments in PreviewKeyDown");
+            }
+
             if (e.EditAction == DataGridEditAction.Cancel || !(e.Row.Item is TEntity entity) ||
                 !entity.Validator.IsValid ||
                 !entity.IsDirty)
                 return;
 
             using (var context = new BookOrdersContext()) {
-                if (e.Row.IsNewItem) {
-                    PropertyInfo property =
-                        context.GetType().GetProperty(typeof(TEntity).Name.Replace("And", "sAnd") + 's');
-                    if (property != null) ((DbSet<TEntity>) property.GetValue(context)).Add(entity);
-                } else {
-                    context.Entry(entity).State = EntityState.Modified;
-                }
+                try {
+                    if (e.Row.IsNewItem) {
+                        PropertyInfo property =
+                            context.GetType().GetProperty(typeof(TEntity).Name.Replace("And", "sAnd") + 's');
+                        if (property != null) ((DbSet<TEntity>)property.GetValue(context)).Add(entity);
+                    } else {
+                        context.Entry(entity).State = EntityState.Modified;
+                    }
 
-                context.SaveChanges();
+                    context.SaveChanges();
+                } catch (Exception exception) {
+                    sender.CancelEdit();
+                    sender.CancelEdit();
+                    Exception innerException = exception;
+                    while (innerException?.InnerException != null) {
+                        innerException = innerException.InnerException;
+                    }
+
+                    MessageBox.Show(innerException?.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 

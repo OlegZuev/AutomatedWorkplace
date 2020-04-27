@@ -22,33 +22,45 @@ namespace AutomatedWorkplace.ViewModels {
 
         private AddEntityWindow _addEntityWindow;
 
+        private readonly MainWindow _mainWindow;
+
         private Author _selectedAuthor;
 
         private Publisher _selectedPublisher;
 
-        public MainWindowViewModel(Window window) {
+        public MainWindowViewModel(MainWindow window) {
             AddNewEntityCommand = new DelegateCommand<object>(AddNewEntity, CanAddNewEntity);
             ShowAllInfoAboutSelectedAuthorCommand =
                 new DelegateCommand<object>(ShowAllInfoAboutSelectedAuthor, CanShowAllInfoAboutSelectedAuthor);
             ShowAllInfoAboutSelectedPublisherCommand =
                 new DelegateCommand<object>(ShowAllInfoAboutSelectedPublisher, CanShowAllInfoAboutSelectedPublisher);
 
+            _mainWindow = window;
             var authenticationViewModel = new AuthenticationViewModel();
             authenticationViewModel.SignInConfirmed += AuthenticationViewModel_SignInConfirmed;
             authenticationViewModel.SignInSkipped += AuthenticationViewModel_SignInSkipped;
             authenticationViewModel.SignUpConfirmed += AuthenticationViewModel_SignUpConfirmed;
             _authenticationWindow = new AuthenticationWindow(authenticationViewModel);
-            window.SourceInitialized += delegate {
-                window.Visibility = Visibility.Hidden;
+            _mainWindow.SourceInitialized += delegate {
+                _mainWindow.ShowActivated = false;
+                _mainWindow.Hide();
+                _authenticationWindow.Closed += AuthenticationWindow_Closed;
                 _authenticationWindow.ShowDialog();
-                BookOrdersContext.RaiseUserStatusLoaded(_currentUser);
-                IsAdmin = _currentUser?.Role == "ADMIN";
-                window.Visibility = Visibility.Visible;
-                AuthorsViewModel.SelectedAuthorChanged += AuthorsViewModel_SelectedAuthorChanged;
-                PublishersViewModel.SelectedAuthorChanged += PublishersViewModel_SelectedAuthorChanged;
-                if (_dialogResult != 0) return;
-                Environment.Exit(0);
             };
+        }
+
+        private void AuthenticationWindow_Closed(object sender, EventArgs e) {
+            if (_dialogResult == 0) {
+                Environment.Exit(0);
+            }
+        }
+
+        private void AuthenticationCompleted() {
+            BookOrdersContext.RaiseUserStatusLoaded(_currentUser);
+            IsAdmin = _currentUser?.Role == "ADMIN";
+            AuthorsViewModel.SelectedAuthorChanged += AuthorsViewModel_SelectedAuthorChanged;
+            PublishersViewModel.SelectedAuthorChanged += PublishersViewModel_SelectedAuthorChanged;
+            _mainWindow.Show();
         }
 
         private void AuthorsViewModel_SelectedAuthorChanged(Author obj) {
@@ -126,24 +138,34 @@ namespace AutomatedWorkplace.ViewModels {
             _currentUser = user;
             _dialogResult = 1;
             _authenticationWindow.Close();
+            AuthenticationCompleted();
         }
 
         private void AuthenticationViewModel_SignInSkipped() {
             _dialogResult = 1;
             _authenticationWindow.Close();
+            AuthenticationCompleted();
         }
 
         private void AuthenticationViewModel_SignUpConfirmed() {
-            _authenticationWindow.Close();
+            _authenticationWindow.Hide();
             var registrationViewModel = new RegistrationViewModel();
             registrationViewModel.RegisterConfirmed += RegistrationViewModel_RegisterConfirmed;
             _registrationWindow = new RegistrationWindow(registrationViewModel);
+            _registrationWindow.Closed += RegistrationWindow_Closed;
             _registrationWindow.ShowDialog();
+        }
+
+        private void RegistrationWindow_Closed(object sender, EventArgs e) {
+            if (_dialogResult != 1) {
+                _authenticationWindow.ShowDialog();
+            }
         }
 
         private void RegistrationViewModel_RegisterConfirmed(User user) {
             _currentUser = user;
             _dialogResult = 1;
+            _authenticationWindow.ShowDialog();
             _registrationWindow.Close();
         }
     }

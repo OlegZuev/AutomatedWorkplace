@@ -26,6 +26,10 @@
                 <Setter Property="b:ReactiveValidation.AutoRefreshErrorTemplate" Value="True" />
                 <Setter Property="b:ReactiveValidation.ErrorTemplate" Value="{StaticResource ValidationErrorTemplate}" />
             </Style>
+            <Style x:Key="DataGridCellValidator" TargetType="DataGridCell">
+                <Setter Property="b:ReactiveValidation.AutoRefreshErrorTemplate" Value="True" />
+                <Setter Property="b:ReactiveValidation.ErrorTemplate" Value="{StaticResource ValidationErrorTemplate}" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -21,7 +21,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Логин" FontSize="16" FontWeight="Bold" Grid.Column="0" />
+                <TextBlock Text="Login" FontSize="16" FontWeight="Bold" Grid.Column="0" />
 
                 <TextBox Padding="2" Grid.Column="1"
                          Text="{Binding NewUser.Login, UpdateSourceTrigger=PropertyChanged}" />
@@ -35,7 +35,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Пароль" FontSize="16" FontWeight="Bold" Grid.Column="0" />
+                <TextBlock Text="Password" FontSize="16" FontWeight="Bold" Grid.Column="0" />
 
                 <PasswordBox Grid.Column="1" x:Name="PwdBox" Padding="2" />
 
@@ -48,16 +48,16 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="0" Content="Войти" Margin="5"
+                <Button Grid.Column="0" Content="Sign In" Margin="5"
                         Command="{Binding SignInCommand}" IsDefault="True"
                         CommandParameter="{Binding ElementName=PwdBox}" />
 
-                <Button Grid.Column="1" Content="Войти как гость" Margin="5"
+                <Button Grid.Column="1" Content="Sign In As Guest" Margin="5"
                         Command="{Binding SkipSignInCommand}" />
                 
             </Grid>
 
-            <Button Content="Зарегистрироваться сейчас" Margin="25 5"
+            <Button Content="Sign Up Now" Margin="25 5"
                     Command="{Binding SignUpCommand}" />
 
         </StackPanel>
