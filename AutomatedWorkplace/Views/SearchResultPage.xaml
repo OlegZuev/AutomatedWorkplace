@@ -1,0 +1,69 @@
+﻿<Page x:Class="AutomatedWorkplace.Views.SearchResultPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:AutomatedWorkplace.Views"
+      xmlns:converters="clr-namespace:AutomatedWorkplace.Converters"
+      xmlns:validators="clr-namespace:AutomatedWorkplace.Validators"
+      xmlns:models="clr-namespace:AutomatedWorkplace.Models"
+      xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+      xmlns:viewModels="clr-namespace:AutomatedWorkplace.ViewModels"
+      mc:Ignorable="d"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="SearchResultPage" d:DataContext="{d:DesignInstance viewModels:SearchResultViewModel}">
+    <Grid>
+        <DataGrid Name="DataGrid" ItemsSource="{Binding Entities, UpdateSourceTrigger=PropertyChanged}"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  MaxHeight="350" VerticalScrollBarVisibility="Auto">
+            <!-- Столбцы, которые отображают информацию о тип литературы -->
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="FIO" Binding="{Binding Author.FIO, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource TextBlockValidator}"
+                                    EditingElementStyle="{StaticResource TextBoxValidator}" Width="*" />
+                <DataGridTextColumn Header="Pseudonym"
+                                    Binding="{Binding Author.Pseudonym, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource TextBlockValidator}"
+                                    EditingElementStyle="{StaticResource TextBoxValidator}" Width="*" />
+                <DataGridTextColumn Header="ISBN" Binding="{Binding ISBN, UpdateSourceTrigger=PropertyChanged}"
+                                    Width="115"
+                                    ElementStyle="{StaticResource TextBlockValidator}"
+                                    EditingElementStyle="{StaticResource TextBoxValidator}" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Book.Name, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource TextBlockValidator}"
+                                    EditingElementStyle="{StaticResource TextBoxValidator}"
+                                    Width="*" />
+                <DataGridTemplateColumn Header="Release Date" SortMemberPath="ReleaseDate">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate DataType="models:BookAndAuthor">
+                            <TextBlock
+                                Text="{Binding Book.ReleaseDate, StringFormat='dd/MM/yyyy', UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                    <DataGridTemplateColumn.CellEditingTemplate>
+                        <DataTemplate DataType="models:BookAndAuthor">
+                            <DatePicker SelectedDate="{Binding Book.ReleaseDate, UpdateSourceTrigger=PropertyChanged}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellEditingTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Age Restriction"
+                                    Binding="{Binding Book.AgeRestriction, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource TextBlockValidator}"
+                                    EditingElementStyle="{StaticResource TextBoxValidator}" />
+                <DataGridTextColumn Header="Name"
+                                    Binding="{Binding Book.Publisher.Name, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource TextBlockValidator}"
+                                    EditingElementStyle="{StaticResource TextBoxValidator}" Width="*" />
+                <DataGridTextColumn Header="Address"
+                                    Binding="{Binding Book.Publisher.Address, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource TextBlockValidator}"
+                                    EditingElementStyle="{StaticResource TextBoxValidator}" Width="*" />
+                <DataGridTextColumn Header="Author Book Number"
+                                    Binding="{Binding AuthorBookNumber, UpdateSourceTrigger=PropertyChanged}"
+                                    ElementStyle="{StaticResource TextBlockValidator}"
+                                    EditingElementStyle="{StaticResource TextBoxValidator}"
+                                    Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Page>

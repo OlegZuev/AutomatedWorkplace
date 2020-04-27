@@ -1,0 +1,75 @@
+﻿<Window x:Class="AutomatedWorkplace.Views.RegistrationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AutomatedWorkplace.Views"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:viewModels="clr-namespace:AutomatedWorkplace.ViewModels"
+        xmlns:converters="clr-namespace:AutomatedWorkplace.Converters"
+        mc:Ignorable="d"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterScreen"
+        Title="Форма регистрации" Width="400"
+        d:DataContext="{d:DesignInstance viewModels:RegistrationViewModel}">
+    <Window.Resources>
+        <converters:NullImageConverter x:Key="NullImageConverter" />
+    </Window.Resources>
+    <Border Padding="10">
+        <StackPanel>
+
+            <!-- Логин -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Логин" FontSize="16" FontWeight="Bold" Grid.Column="0" />
+
+                <TextBox Padding="2" Grid.Column="1"
+                         Text="{Binding NewUser.Login, UpdateSourceTrigger=PropertyChanged}"
+                         Style="{StaticResource TextBoxValidator}" />
+
+            </Grid>
+
+            <!-- Пароль -->
+            <Grid Margin="0 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Пароль" FontSize="16" FontWeight="Bold" Grid.Column="0" />
+
+                <StackPanel Grid.Column="1">
+
+                    <PasswordBox x:Name="PwdBox" Padding="2">
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="PasswordChanged">
+                                <b:InvokeCommandAction Command="{Binding PasswordChangedCommand}"
+                                                       CommandParameter="{Binding ElementName=PwdBox}" />
+                            </b:EventTrigger>
+                            <b:EventTrigger EventName="LostFocus">
+                                <b:InvokeCommandAction Command="{Binding PasswordLostFocusCommand}" />
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
+                    </PasswordBox>
+
+                    <Image Visibility="{Binding ImgPasswordVisibility, UpdateSourceTrigger=PropertyChanged}"
+                           Source="{Binding ImgPasswordStrengthPath, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NullImageConverter}}"
+                           ToolTip="{Binding PasswordError, UpdateSourceTrigger=PropertyChanged}"
+                           Height="10" Margin="0 5 20 0" HorizontalAlignment="Left" />
+
+                </StackPanel>
+
+            </Grid>
+
+            <!-- Зарегистрироваться -->
+            <Button Content="Зарегистрироваться" Margin="25 125 25 0"
+                    Command="{Binding RegisterUserCommand}"
+                    CommandParameter="{Binding ElementName=PwdBox}" />
+
+        </StackPanel>
+    </Border>
+</Window>

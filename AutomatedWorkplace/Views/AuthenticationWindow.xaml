@@ -1,0 +1,65 @@
+﻿<Window x:Class="AutomatedWorkplace.Views.AuthenticationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AutomatedWorkplace.Views"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:viewModels="clr-namespace:AutomatedWorkplace.ViewModels"
+        mc:Ignorable="d"
+        SizeToContent="Height"
+        Title="Форма аутентификации" Width="400"
+        WindowStartupLocation="CenterScreen"
+        d:DataContext="{d:DesignInstance viewModels:AuthenticationViewModel}">
+    <Border Padding="10">
+        <StackPanel>
+
+            <!-- Логин -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Логин" FontSize="16" FontWeight="Bold" Grid.Column="0" />
+
+                <TextBox Padding="2" Grid.Column="1"
+                         Text="{Binding NewUser.Login, UpdateSourceTrigger=PropertyChanged}" />
+
+            </Grid>
+
+            <!-- Пароль -->
+            <Grid Margin="0 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Пароль" FontSize="16" FontWeight="Bold" Grid.Column="0" />
+
+                <PasswordBox Grid.Column="1" x:Name="PwdBox" Padding="2" />
+
+            </Grid>
+
+            <!-- Войти -->
+            <Grid Margin="20 125 20 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Content="Войти" Margin="5"
+                        Command="{Binding SignInCommand}" IsDefault="True"
+                        CommandParameter="{Binding ElementName=PwdBox}" />
+
+                <Button Grid.Column="1" Content="Войти как гость" Margin="5"
+                        Command="{Binding SkipSignInCommand}" />
+                
+            </Grid>
+
+            <Button Content="Зарегистрироваться сейчас" Margin="25 5"
+                    Command="{Binding SignUpCommand}" />
+
+        </StackPanel>
+    </Border>
+</Window>
